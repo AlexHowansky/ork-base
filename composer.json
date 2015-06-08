@@ -1,0 +1,31 @@
+{
+    "name": "ork/base",
+    "type": "library",
+    "description": "A PHP utility library used by Ork packages.",
+    "homepage": "http://github.com/AlexHowansky/ork-base",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Howansky",
+            "email": "alex.howansky@gmail.com",
+            "homepage": "https://github.com/AlexHowansky"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {
+        "ork/phpcs": ">=1.0",
+        "phpunit/phpunit": ">=4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ork\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ork\\Tests\\": "tests/"
+        }
+    }
+}
