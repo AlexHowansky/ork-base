@@ -20,6 +20,13 @@ class Writer
     use \Ork\ConfigurableTrait;
 
     /**
+     * Contains the column names from the header row.
+     *
+     * @var array
+     */
+    protected $columns = null;
+
+    /**
      * Configurable trait settings.
      *
      * @var array
@@ -38,6 +45,10 @@ class Writer
         // Write a header row with column names?
         'header' => true,
 
+        // The column headers. If not provided, we'll use the keys
+        // of the first array passed to the write() method.
+        'headers' => null,
+
         // The field quote charater.
         'quote' => '"',
 
@@ -49,13 +60,6 @@ class Writer
      * @var resource
      */
     protected $csv = null;
-
-    /**
-     * Have we output the header row yet?
-     *
-     * @var boolean
-     */
-    protected $headerOutput = false;
 
     /**
      * Make sure the file handle is closed.
@@ -110,13 +114,27 @@ class Writer
             $this->csv = $csv;
         }
 
-        // Output the header row if we haven't already.
-        if ($this->headerOutput === false && $this->getConfig('header') === true) {
-            $this->put(array_keys($row));
-            $this->headerOutput = true;
+        // If we're not using a header row, just output the values.
+        // The caller will have to ensure the proper column order.
+        if ($this->getConfig('header') === false) {
+            return $this->put(array_values($row));
         }
 
-        $this->put(array_values($row));
+        // Output the header row if we haven't already.
+        if ($this->columns === null) {
+            $this->columns = $this->getConfig('headers') === null ? array_keys($row) : $this->getConfig('headers');
+            $this->put($this->columns);
+        }
+
+        // If this data row doesn't contain values for all the fields in the
+        // header row, then insert empty values for the missing fields, so
+        // that the CSV columns line up properly. Also, make sure that the
+        // columns are in the order that was specified in the header row.
+        $ordered = [];
+        foreach ($this->columns as $column) {
+            $ordered[] = array_key_exists($column, $row) === true ? $row[$column] : '';
+        }
+        return $this->put($ordered);
 
     }
 
