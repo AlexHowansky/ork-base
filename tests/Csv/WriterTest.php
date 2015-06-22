@@ -11,19 +11,21 @@
 
 namespace Ork\Tests;
 
+use org\bovigo\vfs\vfsStream;
+
 class WriterTest extends \PHPUnit_Framework_TestCase
 {
 
-    protected function getFile()
+    protected $vfs;
+
+    public function setUp()
     {
-        return __DIR__ . '/Fixtures/write.csv';
+        $this->vfs = vfsStream::setup();
     }
 
-    protected function clean()
+    protected function getTempFile()
     {
-        if (file_exists($this->getFile())) {
-            unlink($this->getFile());
-        }
+        return $this->vfs->url() . '/' . debug_backtrace()[1]['function'];
     }
 
     /**
@@ -31,8 +33,10 @@ class WriterTest extends \PHPUnit_Framework_TestCase
      */
     public function testWriteFail()
     {
+        touch($this->getTempFile());
+        chmod($this->getTempFile(), 0000);
         $csv = new \Ork\Csv\Writer([
-            'file' => '/path/to/file/that/could/not/possibly/exist',
+            'file' => $this->getTempFile(),
             'header' => false,
         ]);
         @$csv->write([1,2,3,4,5]);
@@ -40,22 +44,20 @@ class WriterTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteNoHeader()
     {
-        $this->clean();
         $csv = new \Ork\Csv\Writer([
-            'file' => $this->getFile(),
+            'file' => $this->getTempFile(),
             'header' => false,
         ]);
         $csv->write([1,2,3,4,5]);
         $csv->write([6,7,8,9,10]);
         unset($csv);
-        $this->assertEquals('66f1d63c002cde9257adc36a7ed58c31', md5_file($this->getFile()));
+        $this->assertEquals('66f1d63c002cde9257adc36a7ed58c31', md5_file($this->getTempFile()));
     }
 
     public function testWriteHeader()
     {
-        $this->clean();
         $csv = new \Ork\Csv\Writer([
-            'file' => $this->getFile(),
+            'file' => $this->getTempFile(),
             'header' => true,
         ]);
         $csv->write([
@@ -71,7 +73,75 @@ class WriterTest extends \PHPUnit_Framework_TestCase
             'Name' => 'baz',
         ]);
         unset($csv);
-        $this->assertEquals('2fc774926f1155e3f70065241680043e', md5_file($this->getFile()));
+        $this->assertEquals('2fc774926f1155e3f70065241680043e', md5_file($this->getTempFile()));
+    }
+
+    public function testOutOfOrderColumns()
+    {
+        $csv = new \Ork\Csv\Writer([
+            'file' => $this->getTempFile(),
+            'header' => true,
+        ]);
+        $csv->write([
+            'Id' => 1,
+            'Name' => 'foo',
+        ]);
+        $csv->write([
+            'Name' => 'bar',
+            'Id' => 2,
+        ]);
+        $csv->write([
+            'Id' => 3,
+            'Name' => 'baz',
+        ]);
+        unset($csv);
+        $this->assertEquals('2fc774926f1155e3f70065241680043e', md5_file($this->getTempFile()));
+    }
+
+    public function testReturnValue()
+    {
+        $csv = new \Ork\Csv\Writer([
+            'file' => $this->getTempFile(),
+            'header' => false,
+        ]);
+        $this->assertEquals(20, $csv->write([0,1,2,3,4,5,6,7,8,9]));
+    }
+
+    public function testWriteHeaderOverride()
+    {
+        $csv = new \Ork\Csv\Writer([
+            'file' => $this->getTempFile(),
+            'header' => true,
+            'headers' => ['one', 'two', 'three'],
+        ]);
+        $csv->write([
+            'one' => 1,
+            'two' => 2,
+            'three' => 3,
+        ]);
+        $csv->write([
+            'two' => 2,
+            'three' => 3,
+        ]);
+        $csv->write([
+            'one' => 1,
+            'three' => 3,
+        ]);
+        $csv->write([
+            'one' => 1,
+            'two' => 2,
+        ]);
+        $csv->write([
+            'one' => 1,
+        ]);
+        $csv->write([
+            'two' => 2,
+        ]);
+        $csv->write([
+            'three' => 3,
+        ]);
+        unset($csv);
+        $this->assertEquals('46b70113332cec6212541e14dc8f417c', md5_file($this->getTempFile()));
     }
 
 }
