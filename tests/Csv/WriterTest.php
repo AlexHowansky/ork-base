@@ -31,7 +31,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RuntimeException
      */
-    public function testWriteFail()
+    public function testCreateFail()
     {
         touch($this->getTempFile());
         chmod($this->getTempFile(), 0000);
@@ -40,6 +40,20 @@ class WriterTest extends \PHPUnit_Framework_TestCase
             'header' => false,
         ]);
         @$csv->write([1,2,3,4,5]);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testWriteFail()
+    {
+        vfsStream::setQuota(1);
+        $csv = new \Ork\Csv\Writer([
+            'file' => $this->getTempFile(),
+            'header' => false,
+        ]);
+        $csv->write([1,2,3,4,5]);
+        vfsStream::setQuota(0);
     }
 
     public function testWriteNoHeader()
@@ -112,7 +126,7 @@ class WriterTest extends \PHPUnit_Framework_TestCase
         $csv = new \Ork\Csv\Writer([
             'file' => $this->getTempFile(),
             'header' => true,
-            'headers' => ['one', 'two', 'three'],
+            'columns' => ['one', 'two', 'three'],
         ]);
         $csv->write([
             'one' => 1,

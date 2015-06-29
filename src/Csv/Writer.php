@@ -33,6 +33,10 @@ class Writer
      */
     protected $config = [
 
+        // The column names for the header row. If not provided, we'll
+        // use the keys from the first array passed to the write() method.
+        'columns' => null,
+
         // The field delimiter character.
         'delimiter' => ',',
 
@@ -44,10 +48,6 @@ class Writer
 
         // Write a header row with column names?
         'header' => true,
-
-        // The column headers. If not provided, we'll use the keys
-        // of the first array passed to the write() method.
-        'headers' => null,
 
         // The field quote charater.
         'quote' => '"',
@@ -88,7 +88,9 @@ class Writer
             $this->getConfig('quote'),
             $this->getConfig('escape')
         );
-        if ($result === false) {
+        // It's not trivial to measure how many bytes we should have written,
+        // so we'll just ensure we have at least one per element.
+        if ($result === false || $result < count($row)) {
             throw new \RuntimeException('Unable to write to output file.');
         }
         return $result;
@@ -122,7 +124,7 @@ class Writer
 
         // Output the header row if we haven't already.
         if ($this->columns === null) {
-            $this->columns = $this->getConfig('headers') === null ? array_keys($row) : $this->getConfig('headers');
+            $this->columns = $this->getConfig('columns') === null ? array_keys($row) : $this->getConfig('columns');
             $this->put($this->columns);
         }
 
