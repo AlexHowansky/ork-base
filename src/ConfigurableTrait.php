@@ -31,7 +31,8 @@ trait ConfigurableTrait
     /**
      * Constructor.
      *
-     * @param array|\Traversable $config The configuration names/values to set.
+     * @param array|\Traversable|string $config The configuration names/values to set, or a
+     *                                          file name that containins them in JSON format.
      *
      * @throws \LogicException If config attribute has not been defined.
      */
@@ -43,7 +44,11 @@ trait ConfigurableTrait
             );
         }
         if ($config !== null) {
-            $this->setConfigs($config);
+            if (is_string($config) === true) {
+                $this->loadConfig($config);
+            } else {
+                $this->setConfigs($config);
+            }
         }
     }
 
@@ -67,6 +72,26 @@ trait ConfigurableTrait
     public function getConfigs()
     {
         return $this->config;
+    }
+
+    /**
+     * Set configuration from a JSON file.
+     *
+     * @param string $file The file containing the configuration.
+     *
+     * @return mixed Allow method chaining.
+     * @throws \RuntimeException On error.
+     */
+    public function loadConfig($file)
+    {
+        if (file_exists($file) === false) {
+            throw new \RuntimeException('No such config file: ' . $file);
+        }
+        $data = json_decode(file_get_contents($file), true);
+        if ($data === null) {
+            throw new \RuntimeException('Invalid config file: ' . $file);
+        }
+        return $this->setConfigs($data);
     }
 
     /**
