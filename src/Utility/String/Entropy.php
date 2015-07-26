@@ -9,7 +9,7 @@
  * @link      https://github.com/AlexHowansky/ork-base
  */
 
-namespace Ork\String;
+namespace Ork\Utility\String;
 
 /**
  * Calculate the Shannon entropy of a string.
@@ -26,9 +26,9 @@ class Entropy
      *
      * @return int The total number of bits of entropy provided by the string.
      */
-    public function bits($string)
+    public static function bits($string)
     {
-        return $this->bitsPerCharacter($string) * strlen($string);
+        return self::bitsPerCharacter($string) * strlen($string);
     }
 
     /**
@@ -38,7 +38,7 @@ class Entropy
      *
      * @return int The number of bits of entropy needed to encode a single character of the given string.
      */
-    public function bitsPerCharacter($string)
+    public static function bitsPerCharacter($string)
     {
         if (is_string($string) === false) {
             throw new \InvalidArgumentException('Argument must be a string.');
