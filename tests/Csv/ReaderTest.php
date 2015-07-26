@@ -9,7 +9,7 @@
  * @link      https://github.com/AlexHowansky/ork-base
  */
 
-namespace Ork\Tests;
+namespace Ork\Tests\Csv;
 
 class ReaderTest extends \PHPUnit_Framework_TestCase
 {

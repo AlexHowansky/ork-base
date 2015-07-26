@@ -9,7 +9,7 @@
  * @link      https://github.com/AlexHowansky/ork-base
  */
 
-namespace Ork\Tests;
+namespace Ork\Tests\Csv;
 
 use org\bovigo\vfs\vfsStream;
 
