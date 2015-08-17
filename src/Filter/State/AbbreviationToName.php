@@ -26,6 +26,9 @@ class AbbreviationToName implements \Ork\Filter\FilterInterface
      */
     protected $config = [
 
+        // Throw an exception on invalid input. Otherwise, return it untouched.
+        'abortOnInvalidInput' => true,
+
         // Include territories that aren't states but have US mailing addresses.
         'includeTerritories' => false,
 
@@ -124,6 +127,9 @@ class AbbreviationToName implements \Ork\Filter\FilterInterface
             array_key_exists($normalized, $this->territories) === true
         ) {
             return $this->territories[$normalized];
+        }
+        if ($this->getConfig('abortOnInvalidInput') === true) {
+            throw new \UnexpectedValueException('Input value can not be mapped to a state abbreviation.');
         }
         return $value;
     }

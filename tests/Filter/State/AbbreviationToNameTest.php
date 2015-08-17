@@ -26,12 +26,26 @@ class AbbreviationToNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('New York', $filter->filter(' ny '));
     }
 
-    public function testBad()
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function testBadWithException()
     {
         $filter = new \Ork\Filter\State\AbbreviationToName();
+        $filter->filter('foo');
+    }
+
+    public function testBadWithoutException()
+    {
+        $filter = new \Ork\Filter\State\AbbreviationToName([
+            'abortOnInvalidInput' => false,
+        ]);
         $this->assertEquals('foo', $filter->filter('foo'));
     }
 
+    /**
+     * @expectedException \UnexpectedValueException
+     */
     public function testDefaultConfig()
     {
         $filter = new \Ork\Filter\State\AbbreviationToName();
