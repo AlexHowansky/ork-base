@@ -66,6 +66,8 @@ class Aggregate implements FilterInterface, \IteratorAggregate
 
     /**
      * Iterate over the defined filters.
+     *
+     * @return \Generator
      */
     public function getIterator()
     {
