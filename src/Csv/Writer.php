@@ -81,13 +81,22 @@ class Writer
      */
     protected function put(array $row)
     {
-        $result = fputcsv(
-            $this->csv,
-            $row,
-            $this->getConfig('delimiter'),
-            $this->getConfig('quote'),
-            $this->getConfig('escape')
-        );
+        if (defined('HHVM_VERSION') === true) {
+            $result = fputcsv(
+                $this->csv,
+                $row,
+                $this->getConfig('delimiter'),
+                $this->getConfig('quote')
+            );
+        } else {
+            $result = fputcsv(
+                $this->csv,
+                $row,
+                $this->getConfig('delimiter'),
+                $this->getConfig('quote'),
+                $this->getConfig('escape')
+            );
+        }
         // It's not trivial to measure how many bytes we should have written,
         // so we'll just ensure we have at least one per element.
         if ($result === false || $result < count($row)) {
