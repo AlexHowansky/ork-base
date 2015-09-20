@@ -26,7 +26,7 @@ class StringToTimeTest extends \PHPUnit_Framework_TestCase
      */
     public function testValid()
     {
-        $this->assertEquals(1278239520, $this->filter->filter('July 4th 2010 6:32am'));
+        $this->assertEquals(1278239520, $this->filter->filter('July 4th 2010 6:32am EDT'));
     }
 
     /*
