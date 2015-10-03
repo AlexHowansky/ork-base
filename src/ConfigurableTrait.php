@@ -60,14 +60,15 @@ trait ConfigurableTrait
     /**
      * Optionally filter a value.
      *
-     * @param string $name The name of the configuration to filter.
+     * @param string $name  The name of the configuration to filter.
      * @param string $value The value to filter.
+     *
      * @return mixed The filtered value.
      */
     protected function filterConfig($name, $value)
     {
         $class = 'filterConfig' . ucfirst($name);
-        if (method_exists($this, $class)) {
+        if (method_exists($this, $class) === true) {
             $value = call_user_func([$this, $class], $value);
         }
         return $value;
