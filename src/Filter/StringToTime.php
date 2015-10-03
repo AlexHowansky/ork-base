@@ -50,9 +50,11 @@ class StringToTime implements FilterInterface
         }
 
         // Allow SQL specials.
-        $temp = strtolower($value);
-        if ($temp === 'now()' || $temp === 'current_timestamp') {
-            return time();
+        if ($this->getConfig('allowSqlSpecials')) {
+            $temp = strtolower($value);
+            if ($temp === 'now()' || $temp === 'current_timestamp') {
+                return time();
+            }
         }
 
         // Catch invalid strings.
