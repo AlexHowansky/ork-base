@@ -19,6 +19,8 @@ class ConfigurableTraitTest extends \PHPUnit_Framework_TestCase
     protected $configs = [
         'key1' => 'foo',
         'key2' => 'bar',
+        'key3' => null,
+        'key4' => null,
     ];
 
     public function testEmptyInitialConfig()
@@ -114,6 +116,22 @@ class ConfigurableTraitTest extends \PHPUnit_Framework_TestCase
     {
         $stub = new Stubs\ConfigurableTraitStub();
         $stub->setConfig('badKey', 'badValue');
+    }
+
+    /**
+     * @expectedException \DomainException
+     */
+    public function testFilterException()
+    {
+        $stub = new Stubs\ConfigurableTraitStub();
+        $stub->setConfig('key3', true);
+    }
+
+    public function testFilter()
+    {
+        $stub = new Stubs\ConfigurableTraitStub();
+        $stub->setConfig('key4', 'filtered');
+        $this->assertEquals('FILTERED', $stub->getConfig('key4'));
     }
 
 }

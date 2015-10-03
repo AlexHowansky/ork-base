@@ -24,6 +24,11 @@ namespace Ork;
  *     'bar' => 1,
  * ];
  * </code>
+ *
+ * You may optionally create methods to pre-process values before they are set.
+ * For example, if a method named filterConfigFoo() exists, then a call to
+ * $obj->setConfig('foo', $value) will result in foo being set to the result
+ * of $obj->filterConfigFoo($value).
  */
 trait ConfigurableTrait
 {
@@ -50,6 +55,22 @@ trait ConfigurableTrait
                 $this->setConfigs($config);
             }
         }
+    }
+
+    /**
+     * Optionally filter a value.
+     *
+     * @param string $name The name of the configuration to filter.
+     * @param string $value The value to filter.
+     * @return mixed The filtered value.
+     */
+    protected function filterConfig($name, $value)
+    {
+        $class = 'filterConfig' . ucfirst($name);
+        if (method_exists($this, $class)) {
+            $value = call_user_func([$this, $class], $value);
+        }
+        return $value;
     }
 
     /**
@@ -104,7 +125,7 @@ trait ConfigurableTrait
      */
     public function setConfig($name, $value)
     {
-        $this->validateConfig($name)->config[$name] = $value;
+        $this->validateConfig($name)->config[$name] = $this->filterConfig($name, $value);
         return $this;
     }
 

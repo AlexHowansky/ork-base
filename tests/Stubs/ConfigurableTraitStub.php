@@ -19,6 +19,21 @@ class ConfigurableTraitStub
     protected $config = [
         'key1' => 'value1',
         'key2' => null,
+        'key3' => null,
+        'key4' => null,
     ];
+
+    protected function filterConfigKey3($value)
+    {
+        if ($value) {
+            throw new \DomainException('Invalid value.');
+        }
+        return $value;
+    }
+
+    protected function filterConfigKey4($value)
+    {
+        return strtoupper($value);
+    }
 
 }
