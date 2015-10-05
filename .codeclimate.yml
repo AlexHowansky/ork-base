@@ -5,3 +5,9 @@ engines:
         enabled: true
     fixme:
         enabled: true
+
+exclude_paths:
+    - *
+    - .git/**/*
+    - vendor/**/*
+    - tests/**/*
