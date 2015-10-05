@@ -9,7 +9,7 @@
  * @link      https://github.com/AlexHowansky/ork-base
  */
 
-namespace Ork\Utility\String;
+namespace Ork\String;
 
 /**
  * Class to perform base32 encoding/decoding.
@@ -20,8 +20,19 @@ namespace Ork\Utility\String;
 class Base32
 {
 
-    // via RFC 4648
-    const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    use \Ork\ConfigurableTrait;
+
+    /**
+     * Configurable trait settings.
+     *
+     * @var array
+     */
+    protected $config = [
+
+        // The characters to use for encoding. Defaults to RFC 4648.
+        'alphabet' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',
+
+    ];
 
     /**
      * Decode a base32 string.
@@ -30,7 +41,7 @@ class Base32
      *
      * @return string The decoded string.
      */
-    public static function decode($data)
+    public function decode($data)
     {
 
         // Make sure we have a valid data string.
@@ -42,7 +53,7 @@ class Base32
         // Convert the data to a binary string.
         $bits = '';
         foreach (str_split(strtoupper($data)) as $char) {
-            $index = strpos(self::ALPHABET, $char);
+            $index = strpos($this->getConfig('alphabet'), $char);
             if ($index === false) {
                 throw new \DomainException('Invalid character in input.');
             }
@@ -64,13 +75,28 @@ class Base32
     }
 
     /**
+     * Make sure we have 32 unique characters.
+     *
+     * @param string $alphabet The alphabet to use.
+     *
+     * @return string
+     */
+    protected function filterConfigAlphabet($alphabet)
+    {
+        if (count(array_unique(str_split($alphabet))) !== 32) {
+            throw new \DomainException('Alphabet must have 32 unique characters.');
+        }
+        return $alphabet;
+    }
+
+    /**
      * Base32 encode a string.
      *
      * @param string $data The string to encode.
      *
      * @return string The base32 encoded string.
      */
-    public static function encode($data)
+    public function encode($data)
     {
 
         // Convert the data to a binary string.
@@ -89,7 +115,7 @@ class Base32
         // Split the binary string into 5-bit chunks and encode each chunk.
         $output = '';
         foreach (str_split($bits, 5) as $chunk) {
-            $output .= substr(self::ALPHABET, bindec($chunk), 1);
+            $output .= substr($this->getConfig('alphabet'), bindec($chunk), 1);
         }
 
         return $output;
