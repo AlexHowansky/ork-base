@@ -9,17 +9,18 @@
  * @link      https://github.com/AlexHowansky/ork-base
  */
 
-namespace Ork\Tests\Utility\String;
+namespace Ork\Tests\String;
 
 class EntropyTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testString()
     {
-        $this->assertEquals(4, \Ork\Utility\String\Entropy::bitsPerCharacter('Tr0ub4dor&3'));
-        $this->assertEquals(44, \Ork\Utility\String\Entropy::bits('Tr0ub4dor&3'));
-        $this->assertEquals(4, \Ork\Utility\String\Entropy::bitsPerCharacter('correcthorsebatterystaple'));
-        $this->assertEquals(100, \Ork\Utility\String\Entropy::bits('correcthorsebatterystaple'));
+        $entropy = new \Ork\String\Entropy();
+        $this->assertEquals(4, $entropy->bitsPerCharacter('Tr0ub4dor&3'));
+        $this->assertEquals(44, $entropy->bits('Tr0ub4dor&3'));
+        $this->assertEquals(4, $entropy->bitsPerCharacter('correcthorsebatterystaple'));
+        $this->assertEquals(100, $entropy->bits('correcthorsebatterystaple'));
     }
 
     /**
@@ -27,7 +28,7 @@ class EntropyTest extends \PHPUnit_Framework_TestCase
      */
     public function testFail()
     {
-        \Ork\Utility\String\Entropy::bits(1);
+        (new \Ork\String\Entropy())->bits(1);
     }
 
 }
