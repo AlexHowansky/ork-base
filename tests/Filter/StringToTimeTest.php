@@ -58,6 +58,7 @@ class StringToTimeTest extends \PHPUnit_Framework_TestCase
         $this->filter->setConfig('allowSqlSpecials', true);
         $this->assertEquals(time(), $this->filter->filter('now()'), null, 1);
         $this->assertEquals(time(), $this->filter->filter('CURRENT_TIMESTAMP'), null, 1);
+        $this->assertEquals(1278239520, $this->filter->filter('July 4th 2010 6:32am EDT'));
     }
 
     /**
