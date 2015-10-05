@@ -75,21 +75,6 @@ class Base32
     }
 
     /**
-     * Make sure we have 32 unique characters.
-     *
-     * @param string $alphabet The alphabet to use.
-     *
-     * @return string
-     */
-    protected function filterConfigAlphabet($alphabet)
-    {
-        if (count(array_unique(str_split($alphabet))) !== 32) {
-            throw new \DomainException('Alphabet must have 32 unique characters.');
-        }
-        return $alphabet;
-    }
-
-    /**
      * Base32 encode a string.
      *
      * @param string $data The string to encode.
@@ -120,6 +105,21 @@ class Base32
 
         return $output;
 
+    }
+
+    /**
+     * Make sure we have 32 unique characters.
+     *
+     * @param string $alphabet The alphabet to use.
+     *
+     * @return string
+     */
+    protected function filterConfigAlphabet($alphabet)
+    {
+        if (count(array_unique(str_split($alphabet))) !== 32) {
+            throw new \DomainException('Alphabet must have 32 unique characters.');
+        }
+        return $alphabet;
     }
 
 }
