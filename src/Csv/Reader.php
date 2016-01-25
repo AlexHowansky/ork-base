@@ -94,7 +94,7 @@ class Reader implements \IteratorAggregate
                 }
             } else {
                 // Apply to one explicitly named column.
-                if (!array_key_exists($column, $row)) {
+                if (array_key_exists($column, $row) === false) {
                     throw new \RuntimeException('Unable to apply callback to missing column: ' . $column);
                 }
                 foreach ((array) $callbacks as $callback) {
