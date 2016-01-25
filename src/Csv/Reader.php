@@ -34,10 +34,13 @@ class Reader implements \IteratorAggregate
     protected $config = [
 
         /**
-         * Callbacks to run on the values after they're extracted. The array index should be the field
-         * name to apply the callbacks to (if headers is true) or the index to apply the callbacks to
-         * if headers is false. The value for each entry can be a single callable or an array of callables.
-         * Each callable should expect one parameter and return one value. Example:
+         * Callback functions to run on the values after they're extracted. If using a header row,
+         * the array index should be the name of the field to apply callbacks to. Alternatively,
+         * if the index string begins with a slash, it will be treated as a regex and applied to
+         * all matching fields. If not using a header row, the array index should be the numerical
+         * index of the column to apply the callback(s) to. The value for each entry can be a single
+         * callable or an array of callables. Each callable should expect one parameter and return
+         * one value. Example:
          *  [
          *      'name' => 'strtolower',
          *      'email' => ['strtolower', 'trim'],

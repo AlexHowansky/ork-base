@@ -27,8 +27,8 @@ namespace Ork;
  *
  * You may optionally create methods to pre-process values before they are set.
  * For example, if a method named filterConfigFoo() exists, then a call to
- * $obj->setConfig('foo', $value) will result in foo being set to the result
- * of $obj->filterConfigFoo($value).
+ * $obj->setConfig('foo', $value) will result in foo being set to the value of
+ * $obj->filterConfigFoo($value).
  */
 trait ConfigurableTrait
 {
