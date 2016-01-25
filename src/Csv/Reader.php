@@ -83,8 +83,23 @@ class Reader implements \IteratorAggregate
     protected function callback($row)
     {
         foreach ($this->getConfig('callbacks') as $column => $callbacks) {
-            foreach ((array) $callbacks as $callback) {
-                $row[$column] = call_user_func($callback, $row[$column]);
+            if (strpos($column, '/') === 0) {
+                // Interpret as a regex and apply to all matching columns.
+                foreach (array_keys($row) as $name) {
+                    if (preg_match($column, $name) === 1) {
+                        foreach ((array) $callbacks as $callback) {
+                            $row[$name] = call_user_func($callback, $row[$name]);
+                        }
+                    }
+                }
+            } else {
+                // Apply to one explicitly named column.
+                if (!array_key_exists($column, $row)) {
+                    throw new \RuntimeException('Unable to apply callback to missing column: ' . $column);
+                }
+                foreach ((array) $callbacks as $callback) {
+                    $row[$column] = call_user_func($callback, $row[$column]);
+                }
             }
         }
         return $row;

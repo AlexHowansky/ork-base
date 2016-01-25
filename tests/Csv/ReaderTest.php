@@ -75,6 +75,37 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $csv->toArray();
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testCallbackOnMissingColumn()
+    {
+        $csv = new \Ork\Csv\Reader([
+            'file' => __DIR__ . '/Fixtures/callbacksFile.csv',
+            'header' => true,
+            'callbacks' => [
+                'DoesNotExist' => ['strtolower'],
+            ],
+        ]);
+        $csv->toArray('Id');
+    }
+
+    public function testCallbackRegex()
+    {
+        $csv = new \Ork\Csv\Reader([
+            'file' => __DIR__ . '/Fixtures/callbacksFile.csv',
+            'header' => true,
+            'callbacks' => [
+                '/./' => ['strtolower', 'trim'],
+            ],
+        ]);
+        $this->assertEquals([
+            '1' => ['Id' => 1, 'Name' => 'foo'],
+            '2' => ['Id' => 2, 'Name' => 'bar'],
+            '3' => ['Id' => 3, 'Name' => 'baz'],
+        ], $csv->toArray('Id'));
+    }
+
     public function testCallbacks()
     {
         $csv = new \Ork\Csv\Reader([
