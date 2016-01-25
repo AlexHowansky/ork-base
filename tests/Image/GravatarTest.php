@@ -18,7 +18,7 @@ class GravatarTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             'a1719586837f0fdac8835f74cf4ef04a',
-            md5((new \Ork\Image\Gravatar(['email' => 'foo@bar.com']))->get())
+            md5((new \Ork\Image\Gravatar(['email' => 'a1719586837f0fdac8835f74cf4ef04a@a.com']))->get())
         );
     }
 
