@@ -22,6 +22,17 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \RuntimeException
      */
+    public function testNotUniqueHeaderFile()
+    {
+        $csv = new \Ork\Csv\Reader([
+            'file' => __DIR__ . '/Fixtures/notUniqueHeaderFile.csv',
+        ]);
+        @$csv->toArray();
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
     public function testMissingFile()
     {
         $csv = new \Ork\Csv\Reader([

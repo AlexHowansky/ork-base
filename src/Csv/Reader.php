@@ -130,7 +130,12 @@ class Reader implements \IteratorAggregate
             }
             ++$this->line;
             if ($this->columns === null && $this->getConfig('header') === true) {
-                $this->columns = $fields;
+                $this->columns = array_map(function ($field) { return trim($field); }, $fields);
+                if (count($this->columns) !== count(array_unique($this->columns))) {
+                    throw new \RuntimeException(
+                        'File does not have unique column headers: ' . $this->getConfig('file')
+                    );
+                }
             } else {
                 $row = $this->getConfig('header') === true ? $this->map($fields) : $fields;
                 yield empty($this->getConfig('callbacks')) === true ? $row : $this->callback($row);
