@@ -4,7 +4,7 @@
 
 Ork Base is a collection of common code utilized by Ork projects.
 
-# Abandonded
+# Abandoned
 
 This package is no longer maintained. Replacement utilites may be available in [ork/core](https://github.com/AlexHowansky/ork-core).
 
