@@ -4,6 +4,10 @@
 
 Ork Base is a collection of common code utilized by Ork projects.
 
+# Abandonded
+
+This package is no longer maintained. Replacement utilites may be available in [ork/core](https://github.com/AlexHowansky/ork-core).
+
 ## Requirements
 
 * PHP 5.5
